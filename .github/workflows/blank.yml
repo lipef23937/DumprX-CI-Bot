@@ -32,20 +32,12 @@ jobs:
     - name: Check Out
     - uses: actions/checkout@v4
 
- - name: "Firmware Dump by DumprX"
-  only_if: $CIRRUS_REPO_OWNER == 'DumprX'
-  skip: $CIRRUS_BRANCH == 'main'
-  auto_cancellation: $CIRRUS_BRANCH == 'autocancel'
-  timeout_in: 120m
-  container:
-      image: ghcr.io/sushrut1101/docker:arch
-      cpu: 4
-      memory: 16G
-
- - name:  "Clone_script"
+  - name:  "Clone_script"
+   run:
       - git clone --depth=1 --single-branch https://github.com/DumprX/DumprX.git
   
  - name:  "Set-SSH-Keys_script"
+ run:
       - mkdir -p ~/.ssh
       - ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
@@ -54,6 +46,7 @@ jobs:
       - chmod 600 ~/.ssh/id_rsa
 
  - name: "Setup_script"
+ run:
       - git config --global user.name "Sushrut1101"
       - git config --global user.email "guptasushrut@gmail.com"
       - cd DumprX
@@ -65,6 +58,7 @@ jobs:
       - sudo bash setup.sh
 
  - name: "DumprX_script"
+ run:
       - cd DumprX || echo "Already in the Directory"
       - ./dumper.sh ${{ inputs.MANIFEST }}
       
